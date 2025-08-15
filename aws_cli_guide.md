@@ -209,7 +209,7 @@ If `aws sts get-caller-identity` errors with credentials, proceed to configurati
 
 AWS CLI stores credentials in `~/.aws/credentials` and config in `~/.aws/config` (or `%UserProfile%\.aws\` on Windows).
 
-### Quick interactive configure
+### Interactive configure
 
 ```bash
    aws configure
@@ -220,6 +220,15 @@ You will be prompted for:
    - AWS Secret Access Key
    - Default region name (e.g., `us-east-1`)
    - Default output format (`json`, `text`, `table`)
+
+Additionally, if your "Access Key ID" starts with "ASIA", then that's STS temporary credentials, which means you need a Session Token inserted manually.
+
+```
+   C:\Users\<Your_Host_Name>\.aws\credentials
+```
+```
+   aws_session_token=<Enter Your Token Here>
+```
 
 ### Named profiles
 
@@ -245,7 +254,7 @@ or set AWS_PROFILE environment variable
    $Env:AWS_PROFILE='prod'                          #PowerShell
 ```
 
-### Environment variables (session-scoped)
+### Environment variables
 
 **Linux/macOS (bash)**
 
