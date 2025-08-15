@@ -54,7 +54,8 @@ Supported platforms covered:
 ```bash
 #Debian/Ubuntu
    sudo apt update && sudo apt upgrade -y
-
+```
+```bash
 #RHEL/CentOS/Amazon Linux
    sudo yum update -y
 ```
@@ -64,6 +65,9 @@ Supported platforms covered:
 ```bash
 #Debian/Ubuntu
    sudo apt install -y curl unzip
+```
+
+```bash
 
 #RHEL/CentOS/AmazonLinux
    sudo yum install -y curl unzip
@@ -71,19 +75,25 @@ Supported platforms covered:
 
 3. **Download the AWS CLI v2 zip** (choose x86_64 or aarch64)
 
+x86_64
 ```bash
-#x86_64
    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+```
 
-#aarch64 (ARM)
+aarch64 (ARM)
+```bash
    curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
 ```
 
 4. **Unzip & install**
-
+   
+Unzip:
 ```bash
    unzip awscliv2.zip
+```
 
+Install:
+```bash
    sudo ./aws/install
 ```
 
@@ -105,6 +115,8 @@ Optional: install to a custom location and place a symlink/exec in PATH
 
 ```bash
    sudo rm -rf /usr/local/aws-cli
+```
+```bash
    sudo rm /usr/local/bin/aws
 ```
 ---
@@ -112,10 +124,16 @@ Optional: install to a custom location and place a symlink/exec in PATH
 ### macOS (Intel & Apple silicon)
 
 #### Method A — Homebrew (recommended)
-
+Update:
 ```bash
    brew update
+```
+Install:
+```bash
    brew install awscli
+```
+Verify:
+```bash
    aws --version
 ```
 
@@ -136,6 +154,14 @@ Optional: install to a custom location and place a symlink/exec in PATH
 
 #### Method A — MSI Installer
    1. Download `AWSCLIV2.msi` from the official AWS distribution.
+   Download link:
+```
+      https://awscli.amazonaws.com/AWSCLIV2.msi
+```
+   or Download in PowerShell or Command Prompt:
+```
+      msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+```
    2. Right‑click → **Run as administrator** → follow the wizard.
    3. Verify in PowerShell or Command Prompt:
 
@@ -147,14 +173,18 @@ Optional: install to a custom location and place a symlink/exec in PATH
 
 ```powershell
    winget source update
+```
+```powershell
    winget install Amazon.AWSCLI
+```
+```powershell
    aws --version
 ```
 
-##### If `aws` not recognized
+##### If `aws` is not recognized
    - Typical install path: `C:\Program Files\Amazon\AWSCLIV2\` or `C:\Program Files\Amazon\AWSCLI\`.
    - Add the `bin` folder to PATH: `C:\Program Files\Amazon\AWSCLIV2\bin\`.
-   - Restart terminal after changing environment variables.
+   - Restart the terminal after changing environment variables.
 ---
 
 ## Post-install verification
@@ -163,7 +193,11 @@ Run these on any OS to verify basic functionality:
 
 ```bash
    aws --version
+```
+```bash
    aws sts get-caller-identity
+```
+```bash
    aws ec2 describe-regions --output table
 ```
 
@@ -199,11 +233,16 @@ Use it:
 
 ```bash
    aws s3 ls --profile prod
+```
 
-#or set AWS_PROFILE environment variable
+or set AWS_PROFILE environment variable
+
+```bash
    export AWS_PROFILE=prod                          #Bash
-   $Env:AWS_PROFILE='prod'                          #PowerShell
+```
 
+```powershell
+   $Env:AWS_PROFILE='prod'                          #PowerShell
 ```
 
 ### Environment variables (session-scoped)
@@ -307,13 +346,13 @@ icacls MyProdKey.pem /inheritance:r /grant:r "$($env:USERNAME):(R)"
 Connect:
 
 ```bash
-ssh -i MyProdKey.pem ec2-user@ec2-198-51-100-1.compute-1.amazonaws.com
+   ssh -i MyProdKey.pem ec2-user@ec2-198-51-100-1.compute-1.amazonaws.com
 ```
 
 Delete (AWS side):
 
 ```bash
-aws ec2 delete-key-pair --key-name MyProdKey
+   aws ec2 delete-key-pair --key-name MyProdKey
 ```
 
 ---
@@ -335,16 +374,17 @@ aws ec2 delete-key-pair --key-name MyProdKey
 ```
 
 2. **Create the security group**
-
-```bash
 #bash (requires jq to parse JSON)
+```bash
    SG_JSON=$(aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id $VPC_ID)
 
    SG_ID=$(echo $SG_JSON | jq -r '.GroupId')
 
    echo $SG_ID
+```
 
-#PowerShell
+PowerShell
+```powershell
 
    $create = aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id $VPC_ID --output json
 
