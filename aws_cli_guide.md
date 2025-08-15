@@ -221,13 +221,14 @@ You will be prompted for:
    - Default region name (e.g., `us-east-1`)
    - Default output format (`json`, `text`, `table`)
 
-Additionally, if your "Access Key ID" starts with "ASIA", then that's STS temporary credentials, which means you need a Session Token inserted manually.
+Also, if your 'Access Key ID' starts with 'ASIA', it indicates STS temporary credentials, which means you’ll need to manually provide a Session Token.
 
 ```
    C:\Users\<Your_Host_Name>\.aws\credentials
 ```
+
 ```
-   aws_session_token=<Enter Your Token Here>
+   aws_session_token= <Enter Your Token Here>
 ```
 
 ### Named profiles
