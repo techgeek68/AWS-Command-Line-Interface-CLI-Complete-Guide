@@ -73,14 +73,25 @@ Supported platforms covered:
    sudo yum install -y curl unzip
 ```
 
-3. **Download the AWS CLI v2 zip** (choose x86_64 or aarch64)
+3. **Download the AWS CLI v2 zip** (Choose x86_64 or aarch64)
 
-x86_64
+**How to know your system architecture ?**:
+
+   For Windows, run the command:
+```
+                                    wmic os get osarchitecture
+```
+   For Linux & Mac, run the command:
+```
+                                    unname -m
+```
+
+For x86_64
 ```bash
    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 ```
 
-aarch64 (ARM)
+For aarch64 (ARM)
 ```bash
    curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
 ```
@@ -97,7 +108,8 @@ Install:
    sudo ./aws/install
 ```
 
-Optional: install to a custom location and place a symlink/exec in PATH
+Optional:
+   Install to a custom location and place a symlink/exec in PATH
 
 ```bash
    sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
@@ -172,19 +184,46 @@ Verify:
 #### Method B — winget (scriptable, preferred for automation)
 
 ```powershell
-   winget source update
+      winget source update
 ```
 ```powershell
-   winget install Amazon.AWSCLI
+      winget install Amazon.AWSCLI
 ```
+
+For PowerShell:
 ```powershell
-   aws --version
+      aws.exe --version
+```
+For Command Prompt:
+```
+      aws --version
 ```
 
 ##### If `aws` is not recognized
    - Typical install path: `C:\Program Files\Amazon\AWSCLIV2\` or `C:\Program Files\Amazon\AWSCLI\`.
    - Add the `bin` folder to PATH: `C:\Program Files\Amazon\AWSCLIV2\bin\`.
    - Restart the terminal after changing environment variables.
+
+### Uninstalling AWS CLI v2
+**Method A — if installed via MSI**
+   - Open Control Panel
+   - Programs and Features
+   - Find AWS Command Line Interface v2
+   - Right-click
+   - Uninstall
+
+
+**Method B — if installed via winget**
+
+Uninstall:
+```powershell
+      winget uninstall Amazon.AWSCLI
+```
+
+Verify:
+```
+      aws    --version
+```
 ---
 
 ## Post-install verification
@@ -203,13 +242,23 @@ Run these on any OS to verify basic functionality:
 
 If `aws sts get-caller-identity` errors with credentials, proceed to configuration.
 
+Note:
+In PowerShell, make sure to run AWS CLI commands using the full executable name:
+```
+   aws.exe --version
+```
+```
+   aws sts get-caller-identity
+```
+```
+   aws.exe configure
+```
 ---
 
 ## Configuration
-
 AWS CLI stores credentials in `~/.aws/credentials` and config in `~/.aws/config` (or `%UserProfile%\.aws\` on Windows).
 
-### Interactive configure
+**Interactive configure for default profile**
 
 ```bash
    aws configure
@@ -221,19 +270,30 @@ You will be prompted for:
    - Default region name (e.g., `us-east-1`)
    - Default output format (`json`, `text`, `table`)
 
-Also, if your 'Access Key ID' starts with 'ASIA', it indicates STS temporary credentials, which means you’ll need to manually provide a Session Token.
 
+Additionally, if your Access Key ID begins with ASIA, it indicates STS temporary credentials, which require you to manually provide a Session Token.
+
+On Windows OS:
 ```
    C:\Users\<Your_Host_Name>\.aws\credentials
-```
 
-```
    aws_session_token= <Enter Your Token Here>
 ```
 
-### Named profiles
+On Linux/Mac:
+```
+   cd ~/.aws/
 
-Create a profile called `prod`:
+   sudo vim credentials
+
+   aws_session_token= <Enter Your Token Here>
+```
+
+### Named profiles (Multiple Profiles Configuration)
+- It sets up a named profile called prod in the same files, without changing the default profile.
+- This allows you to manage multiple sets of credentials (for dev, staging, prod, etc.).
+
+**Create a profile called** *`prod`*:
 
 ```bash
    aws configure --profile prod
@@ -245,19 +305,30 @@ Use it:
    aws s3 ls --profile prod
 ```
 
-or set AWS_PROFILE environment variable
+or set AWS_PROFILE environment variable:
 
+`Bash`
 ```bash
-   export AWS_PROFILE=prod                          #Bash
+   export AWS_PROFILE=prod
 ```
-
+`PowerShell`
 ```powershell
-   $Env:AWS_PROFILE='prod'                          #PowerShell
+   $Env:AWS_PROFILE='prod'                 
 ```
 
 ### Environment variables
+- Environment variables are just another way of supplying credentials & region — but they take priority over profile files and are best for temporary sessions and automation.
 
-**Linux/macOS (bash)**
+- Environment variables aren’t “necessary” all the time, but they’re a powerful way to override, isolate, and automate credentials/regions securely and temporarily, without changing your permanent AWS config.
+
+***Profiles vs Environment Variables**
+> **Profiles** (aws configure)
+   > - Good for long-term developer use on your laptop. You can switch the profile.
+
+> **Environment variables**
+   > - Good for temporary sessions, automation, and CI/CD, where you need a quick override or don’t          want to persist credentials.
+
+**Linux/macOS (`bash`)**
 
 ```bash
       export AWS_ACCESS_KEY_ID="AKIA..."
@@ -265,7 +336,7 @@ or set AWS_PROFILE environment variable
       export AWS_DEFAULT_REGION="us-east-1"
 ```
 
-**Windows PowerShell**
+**Windows (`PowerShell`)**
 
 ```powershell
       $Env:AWS_ACCESS_KEY_ID = "AKIA..."
@@ -273,10 +344,7 @@ or set AWS_PROFILE environment variable
       $Env:AWS_DEFAULT_REGION = "us-east-1"
 ```
 
-> Environment variables override profile files for the running session.
-
-
-### Credentials & config file examples
+### Credentials & Config File Examples:
 
 **`~/.aws/credentials`**
 
@@ -304,9 +372,16 @@ or set AWS_PROFILE environment variable
 
 ---
 
-## MFA & temporary credentials (STS)
+## MFA & Temporary Credentials (STS)
 
-If your account requires MFA, obtain temporary credentials with `aws sts get-session-token`.
+- Some AWS accounts require Multi-Factor Authentication (MFA) for extra security.
+  
+- When MFA is enforced, your long-lived IAM AccessKey/Secret alone won’t work.
+  
+- You must authenticate with your MFA device to obtain short-lived credentials (via STS).
+  
+- If your account requires MFA, obtain temporary credentials with `aws sts get-session-token`.
+   - In this method you stay as your IAM user, but get temporary credentials (useful if MFA is              required).
 
 ```bash
    aws sts get-session-token \
@@ -315,23 +390,109 @@ If your account requires MFA, obtain temporary credentials with `aws sts get-ses
      --duration-seconds 3600
 ```
 
-The response contains `AccessKeyId`, `SecretAccessKey`, and `SessionToken` — export these as env vars or save them to a profile.
+**Complete Example**:
+1. You call aws sts get-session-token with:
+   --serial-number       →The ARN of your MFA device (like arn:aws:iam::123456789012:mfa/your-username)
+   --token-code          →The 6-digit code from your MFA app/device
+   --duration-seconds    →How long the credentials should last (e.g., 3600 = 1 hour)
 
-**Assume role (with MFA if required)**
+2 .AWS returns temporary security credentials:
+```
+{
+  "Credentials": {
+    "AccessKeyId": "ASIA....",
+    "SecretAccessKey": "abcd....",
+    "SessionToken": "IQoJb3....",
+    "Expiration": "2025-08-17T12:34:56Z"
+  }
+}
+```
 
-```bash
-   aws sts assume-role \
-     --role-arn arn:aws:iam::123456789012:role/YourRole \
-     --role-session-name sessionName \
-     --serial-number arn:aws:iam::123456789012:mfa/your-username \
-     --token-code 123456
+3. You then export these as environment variables so AWS CLI/SDKs can use them:
+```
+   export AWS_ACCESS_KEY_ID="ASIA...."
+   export AWS_SECRET_ACCESS_KEY="abcd...."
+   export AWS_SESSION_TOKEN="IQoJb3...."
+```
+
+Or save them into a named profile (recommended if you don’t want to overwrite your defaults):
+```
+   aws configure set aws_access_key_id "ASIA..."     --profile mfa
+   aws configure set aws_secret_access_key "abcd..." --profile mfa
+   aws configure set aws_session_token "IQoJb3..."   --profile mfa
+```
+
+4. Now run commands using the profile:
+```
+   aws s3 ls --profile mfa
 ```
 
 ---
+**Assume role:**
+
+   - Returns temporary credentials (AccessKeyId, SecretAccessKey, SessionToken).
+
+   - You use these creds to act as the role, not as your IAM user.
+
+
+Commonly used for:
+
+   - Cross-account access (jump into another AWS account).
+
+   - Privilege separation (use low-privilege user + assume a role for admin tasks).
+
+   - MFA enforcement (if the trust policy requires MFA).
+
+
+Parameters:
+
+   - RoleArn → The ARN of the IAM role you want to assume. (required)
+
+   - RoleSessionName → A unique name for your session (shows up in CloudTrail). (required)
+
+   - DurationSeconds → How long the session lasts (default 1h, max up to 12h depending on role config).
+
+   - SerialNumber + TokenCode → Provide these if the role’s trust policy enforces MFA.
+
+   - Policy / PolicyArns → You can further restrict the session’s permissions (session policies).
+
+   - Tags / TransitiveTagKeys → Pass tags to the session (can be used for ABAC — attribute-based access control).
+
+   - ExternalId → Extra security for cross-account trust (often used when granting access to third parties).
+
+
+Permissions Needed:
+
+   - The role’s trust policy must allow you (or your account) to assume it.
+
+   - Your IAM user or group policy must grant sts:AssumeRole on that role ARN.
+
+Example:   
+```bash
+aws sts assume-role \
+  --role-arn arn:aws:iam::123456789012:role/YourRole \
+  --role-session-name mySession \
+  --serial-number arn:aws:iam::123456789012:mfa/your-username \
+  --token-code 123456
+```
+
+
+---
+***Comparison: `get-session-token` vs `assume-role`**
+
+| Feature     | `get-session-token`               | `assume-role`                                         |
+| ----------- | --------------------------------- | ----------------------------------------------------- |
+| Identity    | **Stays as IAM user**             | **Becomes role** (assumed role session)               |
+| Permissions | Same as IAM user                  | Role’s permissions (may differ from your user’s)      |
+| MFA         | Used when IAM policy requires MFA | Used when role trust policy requires MFA              |
+| Duration    | Up to 36h (IAM user)              | Up to 12h (role, if configured)                       |
+| Use Case    | Add MFA to user sessions          | Switch to different role (e.g., admin, cross-account) |
+
+---
+
 
 ## Common tasks (cross-platform examples)
-
-> Commands show bash first, then PowerShell where the syntax differs.
+The demonstration below shows how to perform common AWS CLI tasks on both Linux/macOS (bash) and Windows (PowerShell)
 
 ### Create and save an EC2 key pair
 
