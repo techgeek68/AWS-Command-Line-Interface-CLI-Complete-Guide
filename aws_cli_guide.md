@@ -35,9 +35,12 @@ Supported platforms covered:
 ---
 
 ## Prerequisites
-   - An AWS account or IAM user with programmatic access (Access Key ID + Secret Access Key) or SSO.
-   - Administrator / sudo privileges for system installs.
-   - `curl`, `unzip` (Linux/macOS) for the manual installer paths.
+- An AWS account or IAM user with programmatic access (Access Key ID + Secret Access Key) or SSO.
+
+- Administrator / sudo privileges for system installs.
+
+- `curl`, `unzip` (Linux/macOS) for the manual installer paths.
+  
 ---
 
 
@@ -50,25 +53,27 @@ Supported platforms covered:
 
 1. **Update packages**
 
+Debian/Ubuntu:
 ```bash
-#Debian/Ubuntu
    sudo apt update && sudo apt upgrade -y
 ```
+
+RHEL/CentOS/Amazon Linux:
 ```bash
-#RHEL/CentOS/Amazon Linux
    sudo yum update -y
 ```
 
 2. **Install prerequisites**
 
+Debian/Ubuntu:
+
 ```bash
-#Debian/Ubuntu
    sudo apt install -y curl unzip
 ```
 
-```bash
+RHEL/CentOS/AmazonLinux:
 
-#RHEL/CentOS/AmazonLinux
+```bash
    sudo yum install -y curl unzip
 ```
 
@@ -78,11 +83,11 @@ Supported platforms covered:
 
    For Windows, run the command:
 ```
-                                    wmic os get osarchitecture
+      wmic os get osarchitecture
 ```
    For Linux & Mac, run the command:
 ```
-                                    unname -m
+      unname -m
 ```
 
 For x86_64
@@ -153,8 +158,10 @@ Verify:
 #### Method B — Official macOS pkg
 
 1. Download the `AWSCLIV2.pkg` from the official AWS site.
-2. Double-click the `.pkg` and follow the Installer.
-3. Verify in Terminal:
+   
+3. Double-click the `.pkg` and follow the Installer.
+   
+5. Verify in Terminal:
 
 ```bash
    aws --version
@@ -165,16 +172,20 @@ Verify:
 
 #### Method A — MSI Installer
    1. Download `AWSCLIV2.msi` from the official AWS distribution.
+      
    Download link:
 ```
       https://awscli.amazonaws.com/AWSCLIV2.msi
 ```
+
    or Download in PowerShell or Command Prompt:
 ```
       msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
 ```
+
    2. Right‑click → **Run as administrator** → follow the wizard.
-   3. Verify in PowerShell or Command Prompt:
+      
+   4. Verify in PowerShell or Command Prompt:
 
 ```powershell
    aws --version
@@ -185,6 +196,7 @@ Verify:
 ```powershell
       winget source update
 ```
+
 ```powershell
       winget install Amazon.AWSCLI
 ```
@@ -193,15 +205,18 @@ For PowerShell:
 ```powershell
       aws.exe --version
 ```
+
 For Command Prompt:
 ```
       aws --version
 ```
 
 ##### If `aws` is not recognized
-   - Typical install path: `C:\Program Files\Amazon\AWSCLIV2\` or `C:\Program Files\Amazon\AWSCLI\`.
-   - Add the `bin` folder to PATH: `C:\Program Files\Amazon\AWSCLIV2\bin\`.
-   - Restart the terminal after changing environment variables.
+- Typical install path: `C:\Program Files\Amazon\AWSCLIV2\` or `C:\Program Files\Amazon\AWSCLI\`
+  
+- Add the `bin` folder to PATH: `C:\Program Files\Amazon\AWSCLIV2\bin\`
+  
+- Restart the terminal after changing environment variables
 
 ### Uninstalling AWS CLI v2
 **Method A — if installed via MSI**
@@ -313,6 +328,7 @@ or set AWS_PROFILE environment variable:
 ```bash
    export AWS_PROFILE=prod
 ```
+
 `PowerShell`
 ```powershell
    $Env:AWS_PROFILE='prod'                 
@@ -325,10 +341,10 @@ or set AWS_PROFILE environment variable:
 
 ***Profiles vs Environment Variables**
 > **Profiles** (aws configure)
-   > - Good for long-term developer use on your laptop. You can switch the profile.
+   > Good for long-term developer use on your laptop. You can switch the profile.
 
 > **Environment variables**
-   > - Good for temporary sessions, automation, and CI/CD, where you need a quick override or don’t          want to persist credentials.
+   > Good for temporary sessions, automation, and CI/CD, where you need a quick override or don’t want to persist credentials.
 
 **Linux/macOS (`bash`)**
 
@@ -532,13 +548,20 @@ aws ec2 create-key-pair --key-name MyProdKey --key-type rsa --key-format pem --q
 icacls MyProdKey.pem /inheritance:r /grant:r "$($env:USERNAME):(R)"
 ```
 
-Connect:
+**Connect:**
 
+Syntax:
 ```bash
-   ssh -i MyProdKey.pem ec2-user@ec2-198-51-100-1.compute-1.amazonaws.com
+   ssh -i Key_Name.pem User_Name@Public_DNS
 ```
 
-Delete (AWS side):
+Example:
+
+```bash
+   ssh -i MyProdKey.pem ec2-user@ec2-xxx-xx-xxx-x.compute-1.amazonaws.com
+```
+
+**Delete (AWS side)**:
 
 ```bash
    aws ec2 delete-key-pair --key-name MyProdKey
