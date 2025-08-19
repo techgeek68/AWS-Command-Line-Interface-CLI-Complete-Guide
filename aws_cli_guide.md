@@ -18,7 +18,6 @@
 7. [Common tasks (cross-platform examples)](#common-tasks)
 8. [Troubleshooting & common errors](#troubleshooting)
 9. [Useful commands & best practices](#useful-commands--best-practices)
-10. [Appendix: file locations & examples](#appendix)
 
 ---
 
@@ -242,8 +241,10 @@ Run these on any OS to verify basic functionality:
 
 If `aws sts get-caller-identity` errors with credentials, proceed to configuration.
 
-Note:
-In PowerShell, make sure to run AWS CLI commands using the full executable name:
+---
+
+> Note: In PowerShell, make sure to run AWS CLI commands using the full executable name:
+
 ```
    aws.exe --version
 ```
@@ -265,27 +266,28 @@ AWS CLI stores credentials in `~/.aws/credentials` and config in `~/.aws/config`
 ```
 
 You will be prompted for:
-   - AWS Access Key ID
-   - AWS Secret Access Key
-   - Default region name (e.g., `us-east-1`)
-   - Default output format (`json`, `text`, `table`)
+   - AWS Access Key ID:
+   - AWS Secret Access Key:
+   - Default region name (e.g., `us-east-1`):
+   - Default output format (`json`, `text`, `table`):
 
 
 Additionally, if your Access Key ID begins with ASIA, it indicates that STS temporary credentials are being used, which require you to provide a Session Token manually.
 
-On Windows OS:
-```
-   C:\Users\<Your_Host_Name>\.aws\credentials
 
+On Windows OS: `C:\Users\<Your_Host_Name>\.aws\credentials`
+
+Open the file with the help of a text editor and then,
+
+```
    aws_session_token= <Enter Your Token Here>
 ```
 
-On Linux/Mac:
+On Linux/Mac:  `cd ~/.aws/`
 ```
-   cd ~/.aws/
-
-   sudo vim credentials
-
+   sudo vi credentials
+```
+```
    aws_session_token= <Enter Your Token Here>
 ```
 
@@ -389,12 +391,16 @@ or set AWS_PROFILE environment variable:
      --token-code 123456 \
      --duration-seconds 3600
 ```
-
+---
 **Complete Example**:
+
 1. You call aws sts get-session-token with:
-   --serial-number       →The ARN of your MFA device (like arn:aws:iam::123456789012:mfa/your-username)
-   --token-code          →The 6-digit code from your MFA app/device
-   --duration-seconds    →How long the credentials should last (e.g., 3600 = 1 hour)
+   
+`--serial-number: The ARN of your MFA device (like arn:aws:iam::123456789012:mfa/your-username)`
+
+`--token-code:      The 6-digit code from your MFA app/device`
+
+`--duration-seconds: How long the credentials should last (e.g., 3600 = 1 hour)`
 
 2. AWS returns temporary security credentials:
 ```
@@ -435,7 +441,7 @@ Or save them into a named profile (recommended if you don’t want to overwrite 
    - You use these creds to act in the role, not as your IAM user.
 
 
-Commonly used for:
+**Commonly used for:**
 
    - Cross-account access (jump into another AWS account).
 
@@ -444,30 +450,32 @@ Commonly used for:
    - MFA enforcement (if the trust policy requires MFA).
 
 
-Parameters:
+**Parameters:**
 
-   - RoleArn → The ARN of the IAM role you want to assume. (required)
+   - RoleArn: The ARN of the IAM role you want to assume. (required)
 
-   - RoleSessionName → A unique name for your session (shows up in CloudTrail). (required)
+   - RoleSessionName: A unique name for your session (shows up in CloudTrail). (required)
 
-   - DurationSeconds → How long the session lasts (default 1h, max up to 12h depending on role config).
+   - DurationSeconds: How long the session lasts (default 1h, max up to 12h depending on role config).
 
-   - SerialNumber + TokenCode → Provide these if the role’s trust policy enforces MFA.
+   - SerialNumber + TokenCode: Provide these if the role’s trust policy enforces MFA.
 
-   - Policy / PolicyArns → You can further restrict the session’s permissions (session policies).
+   - Policy / PolicyArns: You can further restrict the session’s permissions (session policies).
 
-   - Tags / TransitiveTagKeys → Pass tags to the session (can be used for ABAC — attribute-based access control).
+   - Tags / TransitiveTagKeys: Pass tags to the session (can be used for ABAC — attribute-based access control).
 
-   - ExternalId → Extra security for cross-account trust (often used when granting access to third parties).
+   - ExternalId: Extra security for cross-account trust (often used when granting access to third parties).
 
 
-Permissions Needed:
+**Permissions Needed:**
 
    - The role’s trust policy must allow you (or your account) to assume it.
 
    - Your IAM user or group policy must grant sts: AssumeRole on that role ARN.
 
+
 Example:   
+
 ```bash
 aws sts assume-role \
   --role-arn arn:aws:iam::123456789012:role/YourRole \
@@ -476,8 +484,8 @@ aws sts assume-role \
   --token-code 123456
 ```
 
-
 ---
+
 ***Comparison: `get-session-token` vs `assume-role`**
 
 | Feature     | `get-session-token`               | `assume-role`                                         |
