@@ -523,6 +523,7 @@ The demonstration below shows how to perform common AWS CLI tasks on both Linux/
 **Linux/macOS (bash)**
 
 Syntax:
+
 ```bash
    aws ec2 create-key-pair \
      --key-name <Key_Pair_Name> \
@@ -532,6 +533,7 @@ Syntax:
 ```
       
 Example:
+
 ```bash
    aws ec2 create-key-pair \
      --key-name MyProdKey \
@@ -597,41 +599,44 @@ Example:
 
 1. **Get the VPC ID**
 
+Bash:
 ```bash
-#bash
    VPC_ID=$(aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
 ```
 ```bash
    echo $VPC_ID
 ```
 
-```bash
-#PowerShell
+PowerShell
+```powershell
    $VPC_ID = (aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
 ```
-```bash
+```powershell
    $VPC_ID
 ```
 
 2. **Create the security group**
  
-**Linux/Unix**
+**Linux/Unix**:
+
 Example:
+
 ```bash
    SG_JSON=$(aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id $VPC_ID)
 ```
 
-`Bash` (requires jq to parse JSON):
-- You’re expected to write or run a Bash script (shell script).
+`Bash`: It requires jq to parse JSON.
 
-- That script will need to handle JSON data.
+   - You’re expected to write or run a Bash script (shell script).
 
-- Since Bash alone cannot parse JSON reliably, the script will depend on the tool jq
- (a lightweight JSON processor) to extract, filter, and manipulate values from JSON.
+   - That script will need to handle JSON data.
 
+   - Since Bash alone cannot parse JSON reliably, the script will depend on the tool jq
+    (a lightweight JSON processor) to extract, filter, and manipulate values from JSON.
 ```bash
    SG_ID=$(echo $SG_JSON | jq -r '.GroupId')
 ```
+
 ```bash
    echo $SG_ID
 ```
