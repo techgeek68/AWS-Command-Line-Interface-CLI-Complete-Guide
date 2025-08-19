@@ -271,7 +271,7 @@ You will be prompted for:
    - Default output format (`json`, `text`, `table`)
 
 
-Additionally, if your Access Key ID begins with ASIA, it indicates STS temporary credentials, which require you to manually provide a Session Token.
+Additionally, if your Access Key ID begins with ASIA, it indicates that STS temporary credentials are being used, which require you to provide a Session Token manually.
 
 On Windows OS:
 ```
@@ -381,7 +381,7 @@ or set AWS_PROFILE environment variable:
 - You must authenticate with your MFA device to obtain short-lived credentials (via STS).
   
 - If your account requires MFA, obtain temporary credentials with `aws sts get-session-token`.
-   - In this method you stay as your IAM user, but get temporary credentials (useful if MFA is              required).
+   - In this method, you stay as your IAM user, but get temporary credentials (useful if MFA        is required).
 
 ```bash
    aws sts get-session-token \
@@ -396,7 +396,7 @@ or set AWS_PROFILE environment variable:
    --token-code          →The 6-digit code from your MFA app/device
    --duration-seconds    →How long the credentials should last (e.g., 3600 = 1 hour)
 
-2 .AWS returns temporary security credentials:
+2. AWS returns temporary security credentials:
 ```
 {
   "Credentials": {
@@ -432,14 +432,14 @@ Or save them into a named profile (recommended if you don’t want to overwrite 
 
    - Returns temporary credentials (AccessKeyId, SecretAccessKey, SessionToken).
 
-   - You use these creds to act as the role, not as your IAM user.
+   - You use these creds to act in the role, not as your IAM user.
 
 
 Commonly used for:
 
    - Cross-account access (jump into another AWS account).
 
-   - Privilege separation (use low-privilege user + assume a role for admin tasks).
+   - Privilege separation (use a low-privilege user + assume a role for admin tasks).
 
    - MFA enforcement (if the trust policy requires MFA).
 
@@ -465,7 +465,7 @@ Permissions Needed:
 
    - The role’s trust policy must allow you (or your account) to assume it.
 
-   - Your IAM user or group policy must grant sts:AssumeRole on that role ARN.
+   - Your IAM user or group policy must grant sts: AssumeRole on that role ARN.
 
 Example:   
 ```bash
@@ -496,8 +496,18 @@ The demonstration below shows how to perform common AWS CLI tasks on both Linux/
 
 ### Create and save an EC2 key pair
 
-**Linux / macOS (bash)**
+**Linux/macOS (bash)**
 
+Syntax:
+```bash
+   aws ec2 create-key-pair \
+     --key-name <Key_Pair_Name> \
+     --key-type <Key_Pair_Type> \
+     --key-format <Key_Pair_Format> \
+     --query 'KeyMaterial' --output text > <Key_Pair_Name> && chmod <Permission> <Key_Pair_Name>
+```
+      
+Example:
 ```bash
    aws ec2 create-key-pair \
      --key-name MyProdKey \
@@ -530,66 +540,169 @@ Delete (AWS side):
 
 ### Create a Security Group and add rules
 
+**Syntax Rules:**
+
+**Variable assignment**
+```
+   Bash: VAR=$(command)
+
+   PowerShell: $VAR = (command)
+```
+
+**Variable reference**
+```
+   Bash: $VAR
+
+   PowerShell: $VAR
+```
+
+**Output/print**
+```
+   Bash: echo $VAR
+
+   PowerShell: Write-Output $VAR (though just typing $VAR also works)
+```
+---
+
 1. **Get the VPC ID**
 
 ```bash
 #bash
    VPC_ID=$(aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
-
+```
+```bash
    echo $VPC_ID
+```
 
+```bash
 #PowerShell
    $VPC_ID = (aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
-
+```
+```bash
    $VPC_ID
 ```
 
 2. **Create the security group**
-#bash (requires jq to parse JSON)
+ 
+**Linux/Unix**
+Example:
 ```bash
    SG_JSON=$(aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id $VPC_ID)
+```
 
+`Bash` (requires jq to parse JSON):
+- You’re expected to write or run a Bash script (shell script).
+
+- That script will need to handle JSON data.
+
+- Since Bash alone cannot parse JSON reliably, the script will depend on the tool jq
+ (a lightweight JSON processor) to extract, filter, and manipulate values from JSON.
+
+```bash
    SG_ID=$(echo $SG_JSON | jq -r '.GroupId')
-
+```
+```bash
    echo $SG_ID
 ```
 
-PowerShell
+**PowerShell**
+
+Example:
 ```powershell
 
    $create = aws ec2 create-security-group --group-name MySecurityGroup --description "My security group" --vpc-id $VPC_ID --output json
+```
 
+```powershell
    $SG_ID = (ConvertFrom-Json $create).GroupId
-
+```
+```powershell
    $SG_ID
 ```
 
 3. **Add ingress rules**
 
+**SSH(port 22)**
 ```bash
-
-#SSH (port 22) and HTTP (port 80)
-
    aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
-
+```
+**HTTP (port 80)**
+```bash
    aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 80 --cidr 0.0.0.0/0
 ```
 
-4. **List & Delete**
-
+**MYSQL From Custom Source**
 ```bash
-   aws ec2 describe-security-groups --group-ids $SG_ID
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 3306 --cidr X.X.X.X/32
+```
+```
+   --protocol tcp: MySQL runs over TCP.
 
-   aws ec2 delete-security-group --group-id $SG_ID
+   --port 3306: default MySQL port.
+
+   --cidr X.X.X.X/32: replace X.X.X.X with the public IP address you want to allow access from.
+
+      - /32 means just that single IP.
+
+         -Example: 203.0.113.25/32
+
+   If you want to allow a range of IPs instead of a single one: --cidr 192.168.1.0/24
+            This would allow all IPs in the 192.168.1.x range.
 ```
 
+**SMTP From Anywhere IPV4**
+```bash
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 25 --cidr 0.0.0.0/0
+```
+```
+   --protocol tcp: SMTP uses TCP.
+
+   --port 25: Default SMTP port.
+
+   --cidr 0.0.0.0/0: Allows all IPv4 addresses.
+```
+
+**SMTP From Anywhere IPV6**
+```bash
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 25 --cidr ::/0
+```
+```
+   --protocol tcp: SMTP uses TCP.
+
+   --port 25: Default SMTP port.
+
+   --cidr ::/0: Allows all IPv6 addresses.
+```
+
+**All Traffic From All Sources**
+```bash
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol -1 --port -1 --cidr 0.0.0.0/0
+```
+```
+   --protocol -1: means all protocols (TCP, UDP, ICMP, etc.).
+
+   --port -1:  means all ports.
+
+   --cidr 0.0.0.0/0: means all IPv4 addresses (worldwide access).
+```
+
+
+4. **List & Delete**
+**List**
+```bash
+   aws ec2 describe-security-groups --group-ids $SG_ID
+```
+**Delete**
+```bash
+   aws ec2 delete-security-group --group-id $SG_ID
+```
 ---
 
 ## Troubleshooting & common errors
 
-- **`aws: command not found` / `'aws' is not recognized`**: Ensure AWS CLI binary installed and on PATH. On Windows, add `C:\Program Files\Amazon\AWSCLIV2\bin\` to PATH and restart terminal.
+- **`aws: command not found` / `'aws' is not recognized`**: Ensure AWS CLI binary is installed and on PATH. On Windows, add `C:\Program Files\Amazon\AWSCLIV2\bin\` to PATH and restart the terminal.
 
-- **Permissions errors with `.pem` files**: `chmod 400 MyKey.pem` (Linux/macOS). On Windows, use `icacls` to remove inheritance and restrict to your user.
+- **Permissions errors with `.pem` files**: `chmod 400 MyKey.pem` (Linux/macOS). On Windows, use `icacls` to remove inheritance and restrict it to your user.
 
 - **Credential/AccessDenied**: Validate credentials, check IAM policy, or use assumed roles/MFA as required.
 
@@ -601,59 +714,168 @@ PowerShell
 
 ## Commonly used commands:
 
-- Verify identity:
+---
+
+**1. General Commands**
 
 ```bash
-   aws sts get-caller-identity
+   aws configure                      #Set up AWS credentials and default region
+```
+```
+   aws sts get-caller-identity        #Verify current AWS identity
+```
+```
+   aws help                           #Get help for AWS CLI
+```
+```
+   aws <service> help                 #Get help for a specific service
 ```
 
-- List regions:
+---
 
+**2. EC2 (Compute)**
+
+List EC2 instances:
 ```bash
-   aws ec2 describe-regions --output table
+   aws ec2 describe-instances
+
+```
+   Start an instance:
+```
+      aws ec2 start-instances --instance-ids i-1234567890abcdef0
+```
+   Stop an instance:
+```
+      aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+```
+   Terminate an instance:
+```
+      aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
 ```
 
-- S3: list buckets
+**Security Group rules**
 
+```
+aws ec2 describe-security-groups
+```
+```
+aws ec2 authorize-security-group-ingress --group-id sg-`xxxx` --protocol tcp --port 22 --cidr 0.0.0.0/0
+```
+```
+aws ec2 revoke-security-group-ingress --group-id sg-`xxxx` --protocol tcp --port 22 --cidr 0.0.0.0/0
+```
+
+---
+
+**3. S3 (Storage)**
+
+List buckets:
 ```bash
    aws s3 ls
 ```
 
+Upload files
+```
+   aws s3 cp localfile.txt s3://my-bucket/
+```
+Download files
+```
+   aws s3 cp s3://my-bucket/remotefile.txt ./ 
+```
+
+Sync local folder with bucket
+```
+   aws s3 sync ./local-folder s3://my-bucket/
+```
+
+Sync bucket with local folder
+```
+   aws s3 sync s3://my-bucket/ ./local-folder
+```
+
+---
+
+**4. IAM (Users/Roles/Policies)**
+
+List users
+```bash
+   aws iam list-users
+```
+
+Create a new user
+```
+   aws iam create-user --user-name David
+```
+
+Attach policy to user
+```
+aws iam attach-user-policy --user-name David --policy-arn                      arn:aws:iam::aws:policy/AdministratorAccess
+```
+
+---
+
+**5. CloudFormation**
+
+Deploy a stack
+```bash
+   aws cloudformation deploy --template-file template.yaml --stack-name MyStack
+```
+
+Describe stack
+```
+   aws cloudformation describe-stacks --stack-name MyStack
+```
+
+---
+
+**6. Lambda**
+
+List functions
+```bash
+   aws lambda list-functions
+```
+
+Invoke a function
+```
+   aws lambda invoke --function-name MyFunction output.json
+```
+
+---
+
+**7. RDS (Databases)**
+
+List databases
+```bash
+aws rds describe-db-instances
+```
+
+Create snapshot
+```
+aws rds create-db-snapshot --db-instance-identifier mydb --db-snapshot-identifier mydb-snapshot
+```
+
+---
+
+**8. CloudWatch/Logs**
+
+List log groups
+```bash
+   aws logs describe-log-groups
+```
+
+Get log events
+```
+   aws logs get-log-events --log-group-name my-log-group --log-stream-name my-log-stream
+```
+
+---
+Best Practices:
+
 - Use named profiles and avoid storing long-lived credentials in source control.
+  
 - Prefer role assumption with least privilege.
+  
 - Rotate access keys regularly and delete unused keys.
 
 ---
-
-## Appendix: file locations & examples
-
-- macOS / Linux: `~/.aws/credentials` and `~/.aws/config`
   
-- Windows: `%UserProfile%\.aws\credentials` and `%UserProfile%\.aws\config`
-  
-
-**Example `~/.aws/credentials`**
-
-```ini
-   [default]
-   aws_access_key_id = AKIA...
-   aws_secret_access_key = ...
-
-   [dev]
-   aws_access_key_id = AKIADEV...
-   aws_secret_access_key = devsecret...
-```
-
-**Example `~/.aws/config`**
-
-```ini
-   [default]
-   region = us-east-1
-   output = json
-
-   [profile dev]
-   region = us-west-2
-   output = json
-```
-
----
