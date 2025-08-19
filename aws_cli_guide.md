@@ -662,6 +662,7 @@ Example:
 ```bash
    aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
 ```
+
 **HTTP (port 80)**
 ```bash
    aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 80 --cidr 0.0.0.0/0
@@ -778,15 +779,15 @@ List EC2 instances:
 ```
    Start an instance:
 ```
-      aws ec2 start-instances --instance-ids i-1234567890abcdef0
+      aws ec2 start-instances --instance-ids i-XXXXXXXXXXXXXXXX
 ```
    Stop an instance:
 ```
-      aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+      aws ec2 stop-instances --instance-ids i-XXXXXXXXXXXXXXXX
 ```
    Terminate an instance:
 ```
-      aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+      aws ec2 terminate-instances --instance-ids i-XXXXXXXXXXXXXXXX
 ```
 
 **Security Group rules**
@@ -795,10 +796,10 @@ List EC2 instances:
 aws ec2 describe-security-groups
 ```
 ```
-aws ec2 authorize-security-group-ingress --group-id sg-`xxxx` --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-XXXXXXXXXXXXXXXXXX --protocol tcp --port 22 --cidr 0.0.0.0/0
 ```
 ```
-aws ec2 revoke-security-group-ingress --group-id sg-`xxxx` --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 revoke-security-group-ingress --group-id sg-XXXXXXXXXXXXXXXXXX --protocol tcp --port 22 --cidr 0.0.0.0/0
 ```
 
 ---
