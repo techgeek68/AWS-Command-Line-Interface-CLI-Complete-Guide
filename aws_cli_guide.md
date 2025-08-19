@@ -544,12 +544,26 @@ Example:
 
 **Windows PowerShell**
 
-```powershell
-aws ec2 create-key-pair --key-name MyProdKey --key-type rsa --key-format pem --query 'KeyMaterial' --output text > MyProdKey.pem
+Users should work within a standard directory (e.g., C:\Users\ERP) rather than a system-protected directory (e.g., C:\WINDOWS\system32)
 
-icacls MyProdKey.pem /inheritance:r /grant:r "$($env:USERNAME):(R)"
+For `Command Prompt`:
+```
+aws ec2 create-key-pair --key-name MyProdKey --key-type rsa --key-format pem --query 'KeyMaterial' --output text > MyProdKey.pem
+```
+Removes all inherited permissions from MyProdKey.pem and then sets explicit Read-only access for the currently logged-in user:
+```
+icacls MyProdKey.pem /inheritance:r /grant:r %USERNAME%:R
 ```
 
+For `PowerShell`:
+```powershell
+aws.exe ec2 create-key-pair --key-name MyProdKey --key-type rsa --key-format pem --query 'KeyMaterial' --output text > MyProdKey.pem
+```
+Removes all inherited permissions from MyProdKey.pem and then sets explicit Read-only access for the currently logged-in user:
+```powershell
+icacls MyProdKey.pem /inheritance:r /grant:r "$($env:USERNAME):(R)"
+```
+----
 **Connect:**
 
 Syntax:
@@ -562,12 +576,16 @@ Example:
 ```bash
    ssh -i MyProdKey.pem ec2-user@ec2-xxx-xx-xxx-x.compute-1.amazonaws.com
 ```
+---
 
 **Delete (AWS side)**:
 
 ```bash
    aws ec2 delete-key-pair --key-name MyProdKey
 ```
+
+
+Note: For `PowerShell`: `aws.exe ec2 delete-key-pair --key-name MyProdKey`
 
 ---
 
@@ -578,21 +596,18 @@ Example:
 **Variable assignment**
 ```
    Bash: VAR=$(command)
-
    PowerShell: $VAR = (command)
 ```
 
 **Variable reference**
 ```
    Bash: $VAR
-
    PowerShell: $VAR
 ```
 
 **Output/print**
 ```
    Bash: echo $VAR
-
    PowerShell: Write-Output $VAR (though just typing $VAR also works)
 ```
 ---
@@ -607,12 +622,20 @@ Bash:
    echo $VPC_ID
 ```
 
-PowerShell
+PowerShell:
 ```powershell
-   $VPC_ID = (aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
+   $VPC_ID = (aws.exe ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
 ```
 ```powershell
    $VPC_ID
+```
+
+Command Prompt:
+```
+   for /f "delims=" %i in ('aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text') do set VPC_ID=%i
+```
+```
+   echo %VPC_ID%
 ```
 
 2. **Create the security group**
