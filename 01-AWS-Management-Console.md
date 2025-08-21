@@ -1,4 +1,4 @@
-# AWS Management Console Access Guide
+# 1. AWS Management Console Access Guide
 
 **Audience:** New Cloud Engineers  
 **Environment:** Production & Development  
