@@ -3,7 +3,7 @@
 **Audience:** New Cloud Engineers  
 **Environment:** Production & Development  
 **Region:** Example: us-east-1  
-**Operating System:** Windows `PowerShell`, macOS `Terminal`, Linux `Terminal`
+**Operating System:** Windows, macOS, Linux
 
 ---
 
