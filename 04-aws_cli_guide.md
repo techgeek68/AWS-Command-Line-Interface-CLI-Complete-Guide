@@ -1,31 +1,31 @@
-# AWS CLI v2 – Core Guide (Installation, Configuration, MFA & Troubleshooting)
+# AWS CLI v2 – Installation, Configuration, MFA & Troubleshooting
 
-A focused guide for installing, configuring, and securely using the AWS Command Line Interface (AWS CLI v2) on Linux, macOS, and Windows.  
-Service‑specific usage (EC2, S3, IAM, Lambda, etc.) has been moved into separate docs under `docs/`.
+A focused guide for installing, configuring, and securely using the AWS Command Line Interface (AWS CLI v2) on Linux, macOS, and Windows.
 
 ---
 
 ## Table of Contents
-1. Overview
-2. Supported Platforms
-3. Prerequisites
-4. Installation
-   - Linux (Ubuntu/Debian, RHEL/CentOS, Amazon Linux)
-   - macOS (Homebrew/pkg)
-   - Windows (MSI / winget)
-5. Post‑install Verification
-6. Configuration
-   - Default profile
-   - Credentials & config files
-   - Named profiles
-   - Environment variables
-   - When to use profiles vs env vars
-7. MFA & Temporary Credentials (STS)
-   - get-session-token
-   - assume-role
-   - Comparison
-8. CLI Troubleshooting
-9. Best Practices (CLI Scope)
+1. [Overview](#1-overview)
+2. [Supported Platforms](#2-supported-platforms)
+3. [Prerequisites](#3-prerequisites)
+4. [Installation](#4-installation)
+   - [Linux](#41-linux-ubuntu--debian--rhel--centos--amazon-linux)
+   - [macOS](#42-macos)
+   - [Windows](#43-windows)
+5. [Post‑install Verification](#5-postinstall-verification)
+6. [Configuration](#6-configuration)
+   - [Default Profile](#61-interactive-default-profile)
+   - [Credentials & Config Files](#62-credentials--config-file-examples)
+   - [Named Profiles](#63-named-profiles)
+   - [Environment Variables](#64-environment-variables-override-mechanism)
+   - [Profiles vs Env Vars](#65-profiles-vs-environment-variables)
+7. [MFA & Temporary Credentials (STS)](#7-mfa--temporary-credentials-sts)
+   - [get-session-token](#71-get-session-token-stay-as-iam-user)
+   - [assume-role](#72-assume-role-change-effective-identity)
+   - [Comparison](#73-comparison)
+8. [CLI Troubleshooting](#8-cli-troubleshooting-core-only)
+9. [Best Practices](#9-best-practices-cli-scope)
+10. [What’s Next](#whats-next)
 
 ---
 
