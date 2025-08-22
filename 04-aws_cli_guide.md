@@ -392,7 +392,7 @@ $Env:AWS_SESSION_TOKEN = $st
 
 ---
 
-## 8. CLI Troubleshooting (Core Only)
+## 8. CLI Troubleshooting (Basic Only)
 
 | Symptom | Cause | Resolution |
 |---------|-------|-----------|
