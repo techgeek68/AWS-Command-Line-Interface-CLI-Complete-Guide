@@ -33,13 +33,13 @@ A focused guide for installing, configuring, and securely using the AWS Command 
 The AWS CLI provides a unified, scriptable interface to AWS services. This guide covers only the core CLI lifecycle: install → configure → authenticate (including MFA / roles) → verify → troubleshoot.
 
 Service task examples now live in:
-- `docs/aws-ec2.md`
-- `docs/aws-s3.md`
-- `docs/aws-iam.md`
-- `docs/aws-cloudformation.md`
-- `docs/aws-lambda.md`
-- `docs/aws-rds.md`
-- `docs/aws-cloudwatch.md`
+- [AWS EC2 CLI Guide](aws-ec2.md)
+- [AWS S3 CLI Guide](aws-s3.md)
+- [AWS IAM CLI Guide](aws-iam.md)
+- [AWS CloudFormation CLI Guide](aws-cloudformation.md)
+- [AWS Lambda CLI Guide](aws-lambda.md)
+- [AWS RDS CLI Guide](aws-rds.md)
+- [AWS CloudWatch CLI Guide](aws-cloudwatch.md)
 
 ---
 
@@ -430,6 +430,13 @@ cat ~/.aws/config
 ---
 
 ## What’s Next
-See service guides in chapter `04.4.xx` for task-focused examples (EC2, S3, IAM, etc.).
+See dedicated service guides for task-focused examples:
+- [AWS EC2 CLI Guide](aws-ec2.md)
+- [AWS S3 CLI Guide](aws-s3.md) 
+- [AWS IAM CLI Guide](aws-iam.md)
+- [AWS CloudFormation CLI Guide](aws-cloudformation.md)
+- [AWS Lambda CLI Guide](aws-lambda.md)
+- [AWS RDS CLI Guide](aws-rds.md)
+- [AWS CloudWatch CLI Guide](aws-cloudwatch.md)
 
 ---

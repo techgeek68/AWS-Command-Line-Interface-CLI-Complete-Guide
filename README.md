@@ -6,6 +6,8 @@ A comprehensive, security-focused guide for accessing and managing AWS services,
 
 This repository provides modular documentation covering multiple AWS access methods with detailed, production-ready examples and security best practices.
 
+> **Note:** This repository has been refactored from numbered files (04.1-aws-cli–EC2.md, 04.2-AWS-CLI-S3.md, etc.) to a more intuitive naming scheme. The old numbered service files have been replaced with consistently named guides (aws-ec2.md, aws-s3.md, etc.) that provide comprehensive, up-to-date content.
+
 ### Core AWS CLI Documentation
 
 - **[AWS CLI Guide](aws_cli_guide.md)** - Complete installation, configuration, authentication, and troubleshooting guide for AWS CLI v2
