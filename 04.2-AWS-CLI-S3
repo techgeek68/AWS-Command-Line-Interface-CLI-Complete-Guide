@@ -1,0 +1,155 @@
+# AWS CLI – S3 Guide
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Buckets](#1-buckets)
+3. [Object Operations](#2-object-operations)
+4. [Versioning & Encryption](#3-versioning--encryption)
+5. [Presigned URLs](#4-presigned-urls)
+6. [Cross-Platform Notes](#5-cross-platform-notes)
+7. [Best Practices](#6-best-practices)
+8. [Troubleshooting](#7-troubleshooting)
+
+---
+
+## Overview
+Amazon S3 is object storage for unstructured data. The CLI enables listing buckets, uploading/downloading objects, synchronization, metadata management, and presigned URLs for temporary access.
+
+---
+
+## 1. Buckets
+List buckets:
+```bash
+aws s3 ls
+```
+
+Create bucket (region-specific):
+```bash
+aws s3api create-bucket \
+  --bucket my-unique-bucket-123456 \
+  --region us-east-1 \
+  --create-bucket-configuration LocationConstraint=us-east-1
+```
+
+Delete empty bucket:
+```bash
+aws s3 rb s3://my-unique-bucket-123456
+```
+
+Force delete:
+```bash
+aws s3 rb s3://my-unique-bucket-123456 --force
+```
+
+List objects:
+```bash
+aws s3 ls s3://my-unique-bucket-123456/
+```
+
+---
+
+## 2. Object Operations
+Upload:
+```bash
+aws s3 cp ./localfile.txt s3://my-unique-bucket-123456/
+```
+
+Download:
+```bash
+aws s3 cp s3://my-unique-bucket-123456/path/file.txt ./file.txt
+```
+
+Recursive upload:
+```bash
+aws s3 cp ./website/ s3://my-unique-bucket-123456/website/ --recursive
+```
+
+Sync local → bucket:
+```bash
+aws s3 sync ./data/ s3://my-unique-bucket-123456/data/
+```
+
+Sync bucket → local:
+```bash
+aws s3 sync s3://my-unique-bucket-123456/data/ ./data/
+```
+
+Delete object:
+```bash
+aws s3 rm s3://my-unique-bucket-123456/path/file.txt
+```
+
+Filter delete:
+```bash
+aws s3 rm s3://my-unique-bucket-123456/logs/ --recursive --exclude "*" --include "*.gz"
+```
+
+---
+
+## 3. Versioning & Encryption
+Enable versioning:
+```bash
+aws s3api put-bucket-versioning \
+  --bucket my-unique-bucket-123456 \
+  --versioning-configuration Status=Enabled
+```
+
+List versions:
+```bash
+aws s3api list-object-versions --bucket my-unique-bucket-123456
+```
+
+Default encryption (SSE-S3):
+```bash
+aws s3api put-bucket-encryption \
+  --bucket my-unique-bucket-123456 \
+  --server-side-encryption-configuration '{
+    "Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]
+  }'
+```
+
+---
+
+## 4. Presigned URLs
+Default expiry (3600s):
+```bash
+aws s3 presign s3://my-unique-bucket-123456/path/file.txt
+```
+
+Custom expiry:
+```bash
+aws s3 presign s3://my-unique-bucket-123456/path/file.txt --expires-in 600
+```
+
+---
+
+## 5. Cross-Platform Notes
+PowerShell / CMD similar:
+```powershell
+aws.exe s3 ls
+aws.exe s3 sync . s3://my-unique-bucket-123456/
+```
+
+---
+
+## 6. Best Practices
+- Unique DNS-compliant bucket names.
+- Enable versioning + lifecycle (transition, expire).
+- Enforce encryption (default encryption + bucket policy).
+- Block public access unless required.
+- Use appropriate storage classes for infrequent access.
+- Apply object tags for cost & governance.
+- Avoid blind recursive deletions in automation.
+
+---
+
+## 7. Troubleshooting
+| Issue | Cause | Resolution |
+|-------|-------|-----------|
+| AccessDenied | Permissions or public block | Review IAM & bucket policies |
+| 403 presign | Expired or wrong region | Recreate with correct region |
+| Slow sync | Many small files | Consider parallelism / batching |
+| NoSuchBucket | Typo / region mismatch | Confirm name & correct region |
+| SignatureDoesNotMatch | Clock skew | Sync system time (NTP) |
+
+---
