@@ -1,0 +1,96 @@
+# Lab: Creating Key Pairs in AWS Management Console
+
+This guide provides a step-by-step walkthrough for creating an EC2 Key Pair using the AWS Management Console. Key Pairs are essential for securely connecting to Linux and Windows EC2 instances.
+
+---
+
+## What is a Key Pair?
+
+A **Key Pair** in AWS consists of a public key (stored by AWS) and a private key (downloaded by you). It’s used to securely access EC2 instances:
+- **Linux**: via SSH authentication.
+- **Windows**: for decrypting the Administrator password for RDP access.
+
+---
+
+## Prerequisites
+
+- AWS account with permissions to manage EC2 resources.
+- Web browser.
+
+---
+
+## Step-by-Step Instructions
+
+### 1. Sign Into AWS Management Console
+
+1. Open [https://aws.amazon.com/](https://aws.amazon.com/) in your browser.
+2. Click **Sign In to the Console**.
+3. Enter your credentials and complete MFA if prompted.
+
+---
+
+### 2. Navigate to EC2 Key Pair Section
+
+1. In the AWS Console home page, type **EC2** in the search bar and select **EC2**.
+2. On the EC2 Dashboard, look for the **Network & Security** section in the left sidebar.
+3. Click **Key Pairs**.
+
+---
+
+### 3. Create a New Key Pair
+
+1. Click the **Create key pair** button (top-right of Key Pairs page).
+2. Fill in the following fields:
+   - **Name**: Enter a unique name (e.g., `MyLabKeyPair`).
+   - **Key pair type**:
+     - **RSA**: Compatible with most SSH clients.
+     - **ED25519**: Offers stronger security and performance (check compatibility).
+   - **Private key file format**:
+     - **.pem**: Standard for Linux, MacOS, and most SSH clients.
+     - **.ppk**: For PuTTY (Windows).
+3. (Optional) Enable **Key pair tags** for organization and cost tracking.
+4. Click **Create key pair**.
+
+---
+
+### 4. Download and Store the Private Key
+
+- The private key file (`.pem` or `.ppk`) will automatically download to your computer.
+- **Important:** AWS does NOT store your private key. If lost, you cannot download it again.
+- Store the key file in a secure, private location. Never share it with others.
+
+---
+
+### 5. Verify Key Pair Creation
+
+- The new key pair appears in the Key Pairs list.
+- You can now use this key pair when launching EC2 instances.
+- For SSH access: set correct permissions (Linux/Mac):
+  ```sh
+  chmod 400 /path/to/MyLabKeyPair.pem
+  ```
+- For PuTTY: use `.ppk` file or convert `.pem` using PuTTYgen.
+
+---
+
+## Tips & Best Practices
+
+- **Security:** Never share your private key. Limit permissions to your user.
+- **Backup:** Store a backup in a secure location (e.g., encrypted USB or password manager).
+- **Naming:** Use descriptive names for key pairs (e.g., project, environment, owner).
+- **Organization:** Tag key pairs for better resource management.
+
+---
+
+## Cleanup
+
+- Delete unused key pairs to reduce risk.
+  1. Select the key pair in the list.
+  2. Click **Delete**.
+
+---
+
+**Congratulations!**  
+You have successfully created an EC2 Key Pair in AWS Management Console.
+
+---
