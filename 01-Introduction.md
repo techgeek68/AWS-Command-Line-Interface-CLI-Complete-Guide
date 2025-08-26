@@ -1,6 +1,6 @@
-# Ways to Access AWS (new cloud engineers • dev/test • production)
+# Ways to Access AWS (Junior/Associate Cloud Engineers • Dev/Test • Production)
 
-This guide is designed for **new cloud engineers** working in a **production** environment. It provides thorough, beginner-friendly, and security-focused instructions for accessing AWS via multiple methods, covering all essentials for a safe, reliable, and scalable setup.
+This guide is designed for **Entry-level cloud engineers** working in a **production** environment. It provides thorough, beginner-friendly, and security-focused instructions for accessing AWS via multiple methods, covering all essentials for a safe, reliable, and scalable setup.
 
 ---
 
