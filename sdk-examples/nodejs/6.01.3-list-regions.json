@@ -1,0 +1,13 @@
+{
+  "name": "aws-node",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AWS SDK v3 Node.js examples",
+  "main": "list-regions.js",
+  "scripts": {
+    "list:regions": "node list-regions.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.600.0"
+  }
+}
