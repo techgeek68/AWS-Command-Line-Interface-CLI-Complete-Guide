@@ -49,11 +49,9 @@ Structured, hands‑on notes, labs, and code examples showing multiple ways to a
 | 6.01.3 Node.js Sample Output | [6.01.3-list-regions.json](6.01.3-list-regions.json) |
 | 6.02 AWS SDK – .NET | [6.02-awsSDK-dotNET.md](6.02-awsSDK-dotNET.md) |
 | 6.02.1 .NET Sample | [6.02.1-list-regions.cs](6.02.1-list-regions.cs) |
-| 6.02.3 Java Sample (naming anomaly) | [6.02.3-list-regions.java](6.02.3-list-regions.java) |
+| 6.02.3 Java Example | [6.02.3-list-regions.java](6.02.3-list-regions.java) |
 | 6.03 AWS SDK – Java | [6.03-awsSDK-Java.md](6.03-awsSDK-Java.md) |
 | 6.04 AWS SDK – Cross Cutting Topics | [6.04-awsSDK-cross-cutting-topics.md](6.04-awsSDK-cross-cutting-topics.md) |
-
-(Any additional files beyond the first 30 returned may not be listed here.)
 
 ---
 
